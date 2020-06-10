@@ -17,6 +17,7 @@ curl -O "https://sqlite.org/2020/$SQLITE.zip"
 unzip -p "$SQLITE.zip" "$SQLITE/sqlite3.c" > "$SQLITE3_LIB_DIR/sqlite3.c"
 unzip -p "$SQLITE.zip" "$SQLITE/sqlite3.h" > "$SQLITE3_LIB_DIR/sqlite3.h"
 unzip -p "$SQLITE.zip" "$SQLITE/sqlite3ext.h" > "$SQLITE3_LIB_DIR/sqlite3ext.h"
+unzip -p "$SQLITE.zip" "$SQLITE/shell.c" > "$SQLITE3_LIB_DIR/shell.c"
 rm -f "$SQLITE.zip"
 
 # Regenerate bindgen file for sqlite3
@@ -41,7 +42,7 @@ else
 fi
 ./configure --with-crypto-lib=none
 make sqlite3.c
-cp sqlite3.c sqlite3.h sqlite3ext.h "$SCRIPT_DIR/sqlcipher/"
+cp shell.c sqlite3.c sqlite3.h sqlite3ext.h "$SCRIPT_DIR/sqlcipher/"
 cd "$SCRIPT_DIR"
 rm -rf "v${SQLCIPHER_VERSION}.tar.gz" sqlcipher.src
 
