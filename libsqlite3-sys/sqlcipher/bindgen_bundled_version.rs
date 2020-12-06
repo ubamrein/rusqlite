@@ -3,7 +3,7 @@
 pub const SQLITE_VERSION: &'static [u8; 7usize] = b"3.33.0\0";
 pub const SQLITE_VERSION_NUMBER: i32 = 3033000;
 pub const SQLITE_SOURCE_ID: &'static [u8; 85usize] =
-    b"2020-08-14 13:23:32 fca8dc8b578f215a969cd899336378966156154710873e68b3d9ac5881b0alt1\0";
+    b"2020-09-16 16:49:09 adc8e454409e74751851c412162acec17ac81b1d4aeda94e7f42dbf15aafalt1\0";
 pub const SQLITE_OK: i32 = 0;
 pub const SQLITE_ERROR: i32 = 1;
 pub const SQLITE_INTERNAL: i32 = 2;

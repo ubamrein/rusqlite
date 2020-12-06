@@ -14026,6 +14026,19 @@ static void shellIdQuote(
 }
 
 /*
+** Scalar function "usleep(X)" invokes sqlite3_sleep(X) and returns X.
+*/
+static void shellUSleepFunc(
+  sqlite3_context *context, 
+  int argc, 
+  sqlite3_value **argv
+){
+  int sleep = sqlite3_value_int(argv[0]);
+  sqlite3_sleep(sleep/1000);
+  sqlite3_result_int(context, sleep);
+}
+
+/*
 ** Scalar function "shell_escape_crnl" used by the .recover command.
 ** The argument passed to this function is the output of built-in
 ** function quote(). If the first character of the input is "'", 
@@ -14208,6 +14221,8 @@ static void open_db(ShellState *p, int openFlags){
                             shellInt32, 0, 0);
     sqlite3_create_function(p->db, "shell_idquote", 1, SQLITE_UTF8, 0,
                             shellIdQuote, 0, 0);
+    sqlite3_create_function(p->db, "usleep",1,SQLITE_UTF8,0,
+                            shellUSleepFunc, 0, 0);
 #ifndef SQLITE_NOHAVE_SYSTEM
     sqlite3_create_function(p->db, "edit", 1, SQLITE_UTF8, 0,
                             editFunc, 0, 0);
@@ -20275,7 +20290,7 @@ static void main_init(ShellState *data) {
   sqlite3_config(SQLITE_CONFIG_URI, 1);
   sqlite3_config(SQLITE_CONFIG_LOG, shellLog, data);
   sqlite3_config(SQLITE_CONFIG_MULTITHREAD);
-  sqlite3_snprintf(sizeof(mainPrompt), mainPrompt,"sqlite> ");
+  sqlite3_snprintf(sizeof(mainPrompt), mainPrompt,"sqlcipher> ");
   sqlite3_snprintf(sizeof(continuePrompt), continuePrompt,"   ...> ");
 }
 
