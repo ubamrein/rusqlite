@@ -28,11 +28,17 @@ env LIBSQLITE3_SYS_BUNDLING=1 cargo build --features "buildtime_bindgen" --no-de
 find "$SCRIPT_DIR/../target" -type f -name bindgen.rs -exec mv {} "$SQLITE3_LIB_DIR/bindgen_bundled_version.rs" \;
 
 SQLCIPHER_VERSION="4.4.2"
-# Download and generate sqlcipher amalgamation
-mkdir -p $SCRIPT_DIR/sqlcipher.src
-[ -e "v${SQLCIPHER_VERSION}.tar.gz" ] || curl -sfL -O "https://github.com/sqlcipher/sqlcipher/archive/v${SQLCIPHER_VERSION}.tar.gz"
-tar xzf "v${SQLCIPHER_VERSION}.tar.gz" --strip-components=1 -C "$SCRIPT_DIR/sqlcipher.src"
-cd "$SCRIPT_DIR/sqlcipher.src"
+if [ "x${1+y}" = xy ]; then
+    cd "$CUR_DIR"
+    cd "$1" || { echo "Not a directory: $1" >&2; exit 1; }
+    printf '##### configuring in %s #####\n\n' "$(pwd -P)"
+else
+    # $1 unset: Download and generate sqlcipher amalgamation
+    mkdir -p $SCRIPT_DIR/sqlcipher.src
+    [ -e "v${SQLCIPHER_VERSION}.tar.gz" ] || curl -sfL -O "https://github.com/sqlcipher/sqlcipher/archive/v${SQLCIPHER_VERSION}.tar.gz"
+    tar xzf "v${SQLCIPHER_VERSION}.tar.gz" --strip-components=1 -C "$SCRIPT_DIR/sqlcipher.src"
+    cd "$SCRIPT_DIR/sqlcipher.src"
+fi
 ./configure --with-crypto-lib=none
 make sqlite3.c
 cp sqlite3.c sqlite3.h sqlite3ext.h "$SCRIPT_DIR/sqlcipher/"
